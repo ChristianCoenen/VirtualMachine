@@ -19,7 +19,7 @@ public class VM implements Globals {
 	 * @param registerSize
 	 *            size of the register array
 	 * @param memoryAddressSize
-	 *            size of the memory addresses
+	 *            size of the memory address array
 	 */
 	VM(int registerSize, int memoryAddressSize) {
 		this.register = new short[registerSize];
@@ -27,7 +27,7 @@ public class VM implements Globals {
 	}
 
 	/**
-	 * Starts the vm with a given assembler file.
+	 * Start the vm with a given assembler file.
 	 *
 	 * @param filename
 	 *            an interpretable assembler file
@@ -45,21 +45,41 @@ public class VM implements Globals {
 		execute();
 	}
 
+	/**
+	 * Loads the assembler file in the virtual machine.
+	 *
+	 * @param filename
+	 *            an interpretable assembler file
+	 */
 	private void load(String filename) {
 
 	}
 
+	/**
+	 * Loads the assembler file in the virtual machine.
+	 *
+	 * @param test
+	 *            an array with machinecode instructions
+	 */
 	private void simulateLoad(short[] test) {
 		memoryAddress = test;
 
 	}
 
+	/**
+	 * Execute and interpret the machinecode in the memoryAdresses
+	 */
 	private void execute() {
 		while (pC < 2000) {
 			executeLine(memoryAddress[pC]);
 		}
 	}
 
+	/**
+	 * Execute and interpret the machinecode in one memoryAddress
+	 * @param opCode
+	 * 			the machinecode
+	 */
 	private void executeLine(short opCode) {
 		byte cmd = (byte) (opCode & 15);
 		short data = (short) (opCode >> 4);
@@ -170,6 +190,11 @@ public class VM implements Globals {
 		}
 	}
 
+	/**
+	 * Print intern Debug information on the console
+	 * @param rx
+	 * 			 a register
+	 */
 	private void registerDebug(short rx) {
 		if (DEBUG) {
 			System.out.println("Wert von Register " + rx + ": " + register[rx]);
