@@ -8,8 +8,8 @@ import java.util.List;
 
 public class Compiler {
 	private String[][] assemblerToMachine = new String[20][2];
-	private String[] assemblerText = new String[4096];
-	private short[] machineCode= new short[4096];
+	private String[] assemblerText = new String[2000];
+	private short[] machineCode= new short[2000];
 
 	public void compile(String filename) {
 		try {
@@ -41,7 +41,7 @@ public class Compiler {
 
 			short machinecode = 0;
 			for (int j = 0; j < line.length(); j++) {
-				short value =Short.parseShort(assemblerToMachine[i]);
+				short value =Short.parseShort(assemblerToMachine[i][2]);
 				machinecode= (short) (machinecode^ value);
 
 			}
