@@ -16,4 +16,7 @@ public interface Globals {
 	byte JIH = 11;
 	byte JSR = 12;
 	byte RTS = 13;
+
+	// variable to enable/disable the DEBUG-Mode
+	boolean DEBUG = true;
 }
