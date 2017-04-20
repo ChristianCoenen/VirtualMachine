@@ -103,7 +103,7 @@ public class VM implements Globals {
 			}
 			break;
 		}
-		// To-DO
+		//TODO:
 		case MOV: {
 			boolean fromMem = ((opCode >> 12) & 1) == 1;
 			boolean toMem = ((opCode >> 13) & 1) == 1;
@@ -129,7 +129,7 @@ public class VM implements Globals {
 			break;
 		}
 		// subtracts the value of register ry from the value of register rx and
-		// writes the solution into the rgister rx
+		// writes the solution into the register rx
 		case SUB: {
 			register[rx] -= register[ry];
 			pC++;
@@ -137,7 +137,7 @@ public class VM implements Globals {
 			break;
 		}
 		// multiplies the value of register rx with the value of register ry and
-		// writes the solution into the rgister rx
+		// writes the solution into the register rx
 		case MUL: {
 			register[rx] *= register[ry];
 			pC++;
@@ -145,7 +145,7 @@ public class VM implements Globals {
 			break;
 		}
 		// divides the value of register rx with the value of register ry,
-		// checks for divide-by-zero and writes the solution into the rgister rx
+		// checks for divide-by-zero and writes the solution into the register rx
 		case DIV: {
 			if (register[ry] != 0) {
 				register[rx] /= register[ry];
