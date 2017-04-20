@@ -89,10 +89,12 @@ public class VM implements Globals {
 			System.out.println("Command NR: " + cmd);
 		}
 		switch (cmd) {
+		// do nothing for one command
 		case NOP: {
 			pC++;
 			break;
 		}
+		// sets register zero to the given data
 		case LOAD: {
 			register[0] = data;
 			pC++;
@@ -101,6 +103,7 @@ public class VM implements Globals {
 			}
 			break;
 		}
+		// To-DO
 		case MOV: {
 			boolean fromMem = ((opCode >> 12) & 1) == 1;
 			boolean toMem = ((opCode >> 13) & 1) == 1;
@@ -118,66 +121,82 @@ public class VM implements Globals {
 			pC++;
 			break;
 		}
+		// adds the value of register ry to the register rx
 		case ADD: {
 			register[rx] += register[ry];
 			pC++;
 			registerDebug(rx);
 			break;
 		}
+		// subtracts the value of register ry from the value of register rx and
+		// writes the solution into the rgister rx
 		case SUB: {
 			register[rx] -= register[ry];
 			pC++;
 			registerDebug(rx);
 			break;
 		}
+		// multiplies the value of register rx with the value of register ry and
+		// writes the solution into the rgister rx
 		case MUL: {
 			register[rx] *= register[ry];
 			pC++;
 			registerDebug(rx);
 			break;
 		}
+		// divides the value of register rx with the value of register ry,
+		// checks for divide-by-zero and writes the solution into the rgister rx
 		case DIV: {
-			if(register[ry] != 0) {
+			if (register[ry] != 0) {
 				register[rx] /= register[ry];
-			}
-			else {
+			} else {
 				System.out.println("Division nicht ausgeführt, da Ry = 0!");
 			}
 			pC++;
 			registerDebug(rx);
 			break;
 		}
+		// pushes the value of register rx to the stack
 		case PUSH: {
 			stack.push(register[rx]);
 			pC++;
 			break;
 		}
+		// writes the lastly pushed number from the stack to the register rx
 		case POP: {
 			register[rx] = stack.pop();
 			pC++;
 			break;
 		}
+		// sets the programmcounter to the given address
 		case JMP: {
 			pC = data;
 			break;
 		}
+		// sets the programmcounter to the given address if the value of
+		// register zero is zero
 		case JIZ: {
 			if (register[0] == 0) {
 				pC = data;
 			}
 			break;
 		}
+		// sets the programmcounter to the given address if the value of
+		// register zero is bigger then zero
 		case JIH: {
 			if (register[0] > 0) {
 				pC = data;
 			}
 			break;
 		}
+		// sets the programmcounter to the given address and pushes the last
+		// programmcounter+1 to the srStack
 		case JSR: {
 			srStack.push(pC++);
 			pC = data;
 			break;
 		}
+		// sets the programmcounter to the lastly pushed value on the rsStack
 		case RTS: {
 			try {
 				pC = srStack.pop();
