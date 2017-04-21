@@ -1,5 +1,8 @@
 package environment;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.Stack;
 
 /**
@@ -35,14 +38,19 @@ public class VM implements Globals {
 	 *            an interpretable assembler file
 	 */
 	public void run(String filename) {
-		if (DEBUG) {
+		if (false) {
 			short[] test = new short[memoryAddress.length];
 			test[0] = 0b100001;
 			test[1] = 0b000000010011;
 			test[2] = 0b11001;
 			simulateLoad(test);
 		} else {
-			load(filename);
+			try {
+				load(filename);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		Interpreter.interpret(this);
 	}
@@ -53,8 +61,15 @@ public class VM implements Globals {
 	 * @param filename
 	 *            an interpretable assembler file
 	 */
-	private void load(String filename) {
-
+	private void load(String filename) throws IOException{
+		 BufferedReader in = new BufferedReader(new FileReader(filename));
+		    String line;
+		    int counter=0;
+		    while((line = in.readLine()) != null) {
+		       memoryAddress[counter]=Short.parseShort(line) ;
+		       counter++;
+		    }
+		    in.close();
 	}
 
 	/**

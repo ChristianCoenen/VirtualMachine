@@ -1,1 +1,3 @@
-test
+LOAD 1;
+ADD 1;
+JMP 1;
