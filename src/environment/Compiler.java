@@ -59,8 +59,8 @@ public class Compiler implements Globals {
 				machinecodeParts[0] = compileWord(lineInformation[0]);
 				boolean isToMem = lineInformation[1].matches("\\(.*\\)");
 				boolean isFromMem = (lineInformation[2].matches("\\(.*\\)"));
-				lineInformation[1]=lineInformation[1].replaceAll("[()]","");
-				lineInformation[2]=lineInformation[2].replaceAll("[()]","");
+				lineInformation[1]=lineInformation[1].replaceAll("[()R]","");
+				lineInformation[2]=lineInformation[2].replaceAll("[()R]","");
 				if(DEBUG){
 					System.out.println("isToMem: "+ isToMem+" isFromMem: "+ isFromMem);
 				}

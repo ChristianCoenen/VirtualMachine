@@ -18,7 +18,6 @@ public interface Globals {
 	byte RTS = 13;
 	short TOMEM= 0b100000000000;
 	short FROMMEM=0b100000000000;
-	short R0=0000000000000000;
 
 	// variable to enable/disable the DEBUG-Mode
 	boolean DEBUG = true;
