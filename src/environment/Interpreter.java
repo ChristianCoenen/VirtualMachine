@@ -63,6 +63,7 @@ public class Interpreter implements Globals {
 			// writes the value of the register ry into the memory with address given by the value in register rx
 			if (toMem && !fromMem) {
 				v.memoryAddress[v.register[rx]] = v.register[ry];
+				v.registers();
 			}
 			// writes the value of the memory with address given by the value in register ry in the register rx
 			else if (!toMem && fromMem) {
@@ -136,6 +137,8 @@ public class Interpreter implements Globals {
 		case JIZ: {
 			if (v.register[0] == 0) {
 				v.pC = data;
+			}else{
+				v.pC++;
 			}
 			break;
 		}
@@ -150,7 +153,8 @@ public class Interpreter implements Globals {
 		// sets the programmcounter to the given address and pushes the last
 		// programmcounter+1 to the srStack
 		case JSR: {
-			v.srStack.push(v.pC++);
+			v.pC++;
+			v.srStack.push(v.pC);
 			v.pC = data;
 			break;
 		}

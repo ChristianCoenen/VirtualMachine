@@ -2,9 +2,11 @@ package environment;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
@@ -44,17 +46,18 @@ public class Compiler implements Globals {
 	public static void compileLine() {
 		for (int i = 0; i < assemblerText.length; i++) {
 			String[] lineInformation;
-			String line = assemblerText[i].substring(0, assemblerText[i].indexOf(";"));
+			String line = assemblerText[i].substring(0,assemblerText[i].indexOf(';'));
 			if (DEBUG) {
 				System.out.println(line);
 			}
 			lineInformation = line.split(" ");
 
 			short machinecodeParts[] = new short[lineInformation.length];
-
-			if (lineInformation.length == 2) {
+			if(lineInformation.length==1){
 				machinecodeParts[0] = compileWord(lineInformation[0]);
-				machinecodeParts[1] = (short) (Short.parseShort(lineInformation[1])<<4);
+			}else if (lineInformation.length == 2) {
+				machinecodeParts[0] = compileWord(lineInformation[0]);
+				machinecodeParts[1] = (short) (Short.parseShort(lineInformation[1].replaceAll("[()R]",""))<<4);
 			} else if (lineInformation.length == 3) {
 				machinecodeParts[0] = compileWord(lineInformation[0]);
 				boolean isToMem = lineInformation[1].matches("\\(.*\\)");
@@ -110,6 +113,11 @@ public class Compiler implements Globals {
 		outputWriter.flush();
 		outputWriter.close();
 	}
+//	public static void write(String filename) throws IOException {
+//        ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(filename+".dat"));
+//        out.writeObject(machineCode);
+//        out.close();
+//    }
 
 	public static byte compileWord(String assembler) {
 		switch (assembler) {
