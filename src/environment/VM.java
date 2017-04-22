@@ -63,6 +63,7 @@ public class VM implements Globals {
 		for(int i=1000; i<1021; i++){
 			System.out.println("memoryAddress "+i+ " "+this.memoryAddress[i]);
 		}
+		System.out.println();
 	}
 
 	/**

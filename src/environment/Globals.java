@@ -20,5 +20,5 @@ public interface Globals {
 	short FROMMEM=0b100000000000;
 
 	// variable to enable/disable the DEBUG-Mode
-	boolean DEBUG = true;
+	boolean DEBUG = false;
 }

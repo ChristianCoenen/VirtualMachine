@@ -26,7 +26,6 @@ public class Compiler implements Globals {
 		try {
 			write(filename);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -113,11 +112,7 @@ public class Compiler implements Globals {
 		outputWriter.flush();
 		outputWriter.close();
 	}
-//	public static void write(String filename) throws IOException {
-//        ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(filename+".dat"));
-//        out.writeObject(machineCode);
-//        out.close();
-//    }
+
 
 	public static byte compileWord(String assembler) {
 		switch (assembler) {
