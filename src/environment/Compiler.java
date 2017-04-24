@@ -17,7 +17,12 @@ public class Compiler implements Globals {
 	// array which is used to store the compiled assembler-code opCode by opCode
 	private static short[] machineCode = new short[2000];
 
-	// only public method, which manages all single-parts of the compiling
+	/**
+	 * handles the different parts of the compilation
+	 *
+	 * @param filename
+	 *            the file where the assembler-code is
+	 */
 	public static void compile(String filename) {
 		try {
 			read(filename);
@@ -32,8 +37,15 @@ public class Compiler implements Globals {
 		}
 	}
 
-	// Basic input method which reads the given file and stores the code line by
-	// line into the correct array
+	/**
+	 * Basic input method which reads the given file and stores the code line by
+	 * line into the correct array
+	 *
+	 * @param filename
+	 *            which will be read-out
+	 * @throws IOException
+	 *             when the file is not correct
+	 */
 	private static void read(String filename) throws IOException {
 		FileReader fileReader = new FileReader(filename + ".asm");
 		BufferedReader bufferedReader = new BufferedReader(fileReader);
@@ -46,8 +58,11 @@ public class Compiler implements Globals {
 		assemblerText = lines.toArray(new String[lines.size()]);
 	}
 
-	// first we parse and split the text, then we compile every single part of
-	// it and then put them all together with an XOR
+	/**
+	 * first we parse and split the text, then we compile every single part of
+	 * it and then put them all together with an XOR
+	 *
+	 */
 	private static void compileLine() {
 		for (int i = 0; i < assemblerText.length; i++) {
 			String[] lineInformation;
@@ -66,17 +81,18 @@ public class Compiler implements Globals {
 			if (lineInformation.length == 2) {
 				machinecodeParts[1] = (short) (Short.parseShort(lineInformation[1].replaceAll("[()R]", "")) << 4);
 			} else if (lineInformation.length == 3) {
-				//When the line has three parts, its a MOV command.
-				//Here we need to get the toMem and fromMem information first
+				// When the line has three parts, its a MOV command.
+				// Here we need to get the toMem and fromMem information first
 				boolean isToMem = lineInformation[1].matches("\\(.*\\)");
 				boolean isFromMem = (lineInformation[2].matches("\\(.*\\)"));
-				//now delete the unnecessary characters
+				// now delete the unnecessary characters
 				lineInformation[1] = lineInformation[1].replaceAll("[()R]", "");
 				lineInformation[2] = lineInformation[2].replaceAll("[()R]", "");
 				if (DEBUG) {
 					System.out.println("isToMem: " + isToMem + " isFromMem: " + isFromMem);
 				}
-				//for every combination of toMem and fromMem we add the correct bits for this case
+				// for every combination of toMem and fromMem we add the correct
+				// bits for this case
 				if (isToMem && isFromMem) {
 					machinecodeParts[1] = (short) (Short.parseShort(lineInformation[1]) << 4 ^ (0b11000000000000));
 					machinecodeParts[2] = (short) (Short.parseShort(lineInformation[2]) << 8);
@@ -98,7 +114,8 @@ public class Compiler implements Globals {
 				System.out.println("machinecodeParts fertig");
 			}
 			short machinecodeFinish = 0;
-			//combining the compiled parts of every assembler-line to finally save the finished machine-code
+			// combining the compiled parts of every assembler-line to finally
+			// save the finished machine-code
 			for (int k = 0; k < machinecodeParts.length; k++) {
 				machinecodeFinish = (short) (machinecodeFinish ^ machinecodeParts[k]);
 			}
@@ -109,7 +126,11 @@ public class Compiler implements Globals {
 		}
 
 	}
-	//basic output function, to write the machinecode into the new file
+	/**
+	 * basic output function, to write the machine-code into the new file
+	 * @param filename target-file
+	 * @throws IOException
+	 */
 	private static void write(String filename) throws IOException {
 		BufferedWriter outputWriter = null;
 		outputWriter = new BufferedWriter(new FileWriter(filename + ".txt"));
@@ -120,7 +141,11 @@ public class Compiler implements Globals {
 		outputWriter.flush();
 		outputWriter.close();
 	}
-
+	/**
+	 * give a command and get his byte-value
+	 * @param assembler
+	 * @return
+	 */
 	private static byte compileWord(String assembler) {
 		switch (assembler) {
 		case "NOP": {
