@@ -12,10 +12,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Compiler implements Globals {
-	private String[][] assemblerToMachine = new String[20][2];
+	// array which is used to store the assembler-test line by line
 	private static String[] assemblerText = new String[2000];
+	// array which is used to store the compiled assembler-code opCode by opCode
 	private static short[] machineCode = new short[2000];
 
+	// only public method, which manages all single-parts of the compiling
 	public static void compile(String filename) {
 		try {
 			read(filename);
@@ -30,7 +32,9 @@ public class Compiler implements Globals {
 		}
 	}
 
-	public static void read(String filename) throws IOException {
+	// Basic input method which reads the given file and stores the code line by
+	// line into the correct array
+	private static void read(String filename) throws IOException {
 		FileReader fileReader = new FileReader(filename + ".asm");
 		BufferedReader bufferedReader = new BufferedReader(fileReader);
 		List<String> lines = new ArrayList<String>();
@@ -42,46 +46,49 @@ public class Compiler implements Globals {
 		assemblerText = lines.toArray(new String[lines.size()]);
 	}
 
-	public static void compileLine() {
+	// first we parse and split the text, then we compile every single part of
+	// it and then put them all together with an XOR
+	private static void compileLine() {
 		for (int i = 0; i < assemblerText.length; i++) {
 			String[] lineInformation;
-			String line = assemblerText[i].substring(0,assemblerText[i].indexOf(';'));
+			// deleting unnecessary content(comments etc.)
+			String line = assemblerText[i].substring(0, assemblerText[i].indexOf(';'));
 			if (DEBUG) {
 				System.out.println(line);
 			}
 			lineInformation = line.split(" ");
 
 			short machinecodeParts[] = new short[lineInformation.length];
-			if(lineInformation.length==1){
-				machinecodeParts[0] = compileWord(lineInformation[0]);
-			}else if (lineInformation.length == 2) {
-				machinecodeParts[0] = compileWord(lineInformation[0]);
-				machinecodeParts[1] = (short) (Short.parseShort(lineInformation[1].replaceAll("[()R]",""))<<4);
+			// compile the command information of this line
+			machinecodeParts[0] = compileWord(lineInformation[0]);
+			// when the line has only two parts, there is only the data left to
+			// compile, just left-shift with 4 and then parse it into short
+			if (lineInformation.length == 2) {
+				machinecodeParts[1] = (short) (Short.parseShort(lineInformation[1].replaceAll("[()R]", "")) << 4);
 			} else if (lineInformation.length == 3) {
-				machinecodeParts[0] = compileWord(lineInformation[0]);
+				//When the line has three parts, its a MOV command.
+				//Here we need to get the toMem and fromMem information first
 				boolean isToMem = lineInformation[1].matches("\\(.*\\)");
 				boolean isFromMem = (lineInformation[2].matches("\\(.*\\)"));
-				lineInformation[1]=lineInformation[1].replaceAll("[()R]","");
-				lineInformation[2]=lineInformation[2].replaceAll("[()R]","");
-				if(DEBUG){
-					System.out.println("isToMem: "+ isToMem+" isFromMem: "+ isFromMem);
+				//now delete the unnecessary characters
+				lineInformation[1] = lineInformation[1].replaceAll("[()R]", "");
+				lineInformation[2] = lineInformation[2].replaceAll("[()R]", "");
+				if (DEBUG) {
+					System.out.println("isToMem: " + isToMem + " isFromMem: " + isFromMem);
 				}
+				//for every combination of toMem and fromMem we add the correct bits for this case
 				if (isToMem && isFromMem) {
-					machinecodeParts[1] = (short) (Short.parseShort(
-							lineInformation[1])<<4 ^ (0b11000000000000));
-					machinecodeParts[2] = (short) (Short
-							.parseShort(lineInformation[2])<<8);
+					machinecodeParts[1] = (short) (Short.parseShort(lineInformation[1]) << 4 ^ (0b11000000000000));
+					machinecodeParts[2] = (short) (Short.parseShort(lineInformation[2]) << 8);
 				} else if (isToMem && !isFromMem) {
-					machinecodeParts[1] = (short) (Short.parseShort(
-							lineInformation[1])<<4 ^ (0b10000000000000));
-					machinecodeParts[2] = (short) (Short.parseShort(lineInformation[2])<<8);
+					machinecodeParts[1] = (short) (Short.parseShort(lineInformation[1]) << 4 ^ (0b10000000000000));
+					machinecodeParts[2] = (short) (Short.parseShort(lineInformation[2]) << 8);
 				} else if (!isToMem && isFromMem) {
-					machinecodeParts[1] = (short) (Short.parseShort(lineInformation[1])<<4 ^ (0b01000000000000));
-					machinecodeParts[2] = (short) (Short
-							.parseShort(lineInformation[2])<<8);
+					machinecodeParts[1] = (short) (Short.parseShort(lineInformation[1]) << 4 ^ (0b01000000000000));
+					machinecodeParts[2] = (short) (Short.parseShort(lineInformation[2]) << 8);
 				} else if (!isToMem && !isFromMem) {
-					machinecodeParts[1] = (short) (Short.parseShort(lineInformation[1])<<4);
-					machinecodeParts[2] = (short) (Short.parseShort(lineInformation[2])<<8);
+					machinecodeParts[1] = (short) (Short.parseShort(lineInformation[1]) << 4);
+					machinecodeParts[2] = (short) (Short.parseShort(lineInformation[2]) << 8);
 				}
 			}
 			if (DEBUG) {
@@ -91,6 +98,7 @@ public class Compiler implements Globals {
 				System.out.println("machinecodeParts fertig");
 			}
 			short machinecodeFinish = 0;
+			//combining the compiled parts of every assembler-line to finally save the finished machine-code
 			for (int k = 0; k < machinecodeParts.length; k++) {
 				machinecodeFinish = (short) (machinecodeFinish ^ machinecodeParts[k]);
 			}
@@ -101,8 +109,8 @@ public class Compiler implements Globals {
 		}
 
 	}
-
-	public static void write(String filename) throws IOException {
+	//basic output function, to write the machinecode into the new file
+	private static void write(String filename) throws IOException {
 		BufferedWriter outputWriter = null;
 		outputWriter = new BufferedWriter(new FileWriter(filename + ".txt"));
 		for (int i = 0; i < machineCode.length; i++) {
@@ -113,8 +121,7 @@ public class Compiler implements Globals {
 		outputWriter.close();
 	}
 
-
-	public static byte compileWord(String assembler) {
+	private static byte compileWord(String assembler) {
 		switch (assembler) {
 		case "NOP": {
 			return 0b0000;

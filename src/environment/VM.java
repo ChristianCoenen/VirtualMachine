@@ -84,7 +84,8 @@ public class VM implements Globals {
 		for (int i = 0; i < profileCounter.length; i++) {
 			profileCounter[i] = ( (profileCounter[i]*100)/averageCounter);
 			sum+=profileCounter[i];
-			System.out.println("Pozentwert von Zeile "+i+" = "+profileCounter[i] );
+			if(DEBUG){
+			System.out.println("Pozentwert von Zeile "+i+" = "+profileCounter[i] );}
 		}
 		System.out.println("Summe der prozene: "+ sum);
 	}
