@@ -18,8 +18,11 @@ public class VM implements Globals {
 	int pC = 0;
 	short register[];
 	short memoryAddress[];
+	double profileCounter[];
+	int averageCounter = 0;
 	Stack<Short> stack = new Stack<>();
 	Stack<Integer> srStack = new Stack<>();
+	double sum=0;
 
 	/**
 	 * Constructor to create a virtual machine.
@@ -32,6 +35,7 @@ public class VM implements Globals {
 	VM(int registerSize, int memoryAddressSize) {
 		this.register = new short[registerSize];
 		this.memoryAddress = new short[memoryAddressSize];
+		this.profileCounter = new double[memoryAddressSize];
 	}
 
 	/**
@@ -41,27 +45,19 @@ public class VM implements Globals {
 	 *            an interpretable assembler file
 	 */
 	public void run(String filename) {
-		if (false) {
-			short[] test = new short[memoryAddress.length];
-			test[0] = 0b100001;
-			test[1] = 0b000000010011;
-			test[2] = 0b11001;
-			simulateLoad(test);
-		} else {
 			try {
 				load(filename);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-		}
+
 		Interpreter.interpret(this);
 		registers();
 	}
 
-
-	public void registers(){
-		for(int i=1000; i<1021; i++){
-			System.out.println("memoryAddress "+i+ " "+this.memoryAddress[i]);
+	public void registers() {
+		for (int i = 1000; i < 1021; i++) {
+			System.out.println("memoryAddress " + i + " " + this.memoryAddress[i]);
 		}
 		System.out.println();
 	}
@@ -72,21 +68,26 @@ public class VM implements Globals {
 	 * @param filename
 	 *            an interpretable assembler file
 	 */
-	 private void load(String filename) throws IOException{
-	 BufferedReader in = new BufferedReader(new FileReader(filename+".txt"));
-	 String line;
-	 int counter=0;
-	 while((line = in.readLine()) != null) {
-	 memoryAddress[counter]=Short.parseShort(line) ;
-	 counter++;
-	 }
-	 in.close();
-	 }
-//	public void load(String filename) throws IOException, ClassNotFoundException {
-//		ObjectInputStream in = new ObjectInputStream(new FileInputStream(filename + ".dat"));
-//		memoryAddress = (short[]) in.readObject();
-//		in.close();
-//	}
+	private void load(String filename) throws IOException {
+		BufferedReader in = new BufferedReader(new FileReader(filename + ".txt"));
+		String line;
+		int counter = 0;
+		while ((line = in.readLine()) != null) {
+			memoryAddress[counter] = Short.parseShort(line);
+			counter++;
+		}
+		in.close();
+	}
+
+	public void profiling() {
+		sum=0;
+		for (int i = 0; i < profileCounter.length; i++) {
+			profileCounter[i] = ( (profileCounter[i]*100)/averageCounter);
+			sum+=profileCounter[i];
+			System.out.println("Pozentwert von Zeile "+i+" = "+profileCounter[i] );
+		}
+		System.out.println("Summe der prozene: "+ sum);
+	}
 
 	/**
 	 * Loads the assembler file in the virtual machine.

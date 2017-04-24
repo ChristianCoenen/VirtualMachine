@@ -9,6 +9,7 @@ import java.util.EmptyStackException;
  */
 public class Interpreter implements Globals {
 
+
 	/**
 	 * Private constructor, no interpreter object should be created
 	 */
@@ -22,6 +23,9 @@ public class Interpreter implements Globals {
 	 */
 	public static void interpret(VM v) {
 		while (v.pC < 2000) {
+			v.averageCounter++;
+			v.profileCounter[v.pC]=v.profileCounter[v.pC]+1;
+			System.out.println("erhöhre wert von zeile: "+v.pC);
 			interpretLine(v.memoryAddress[v.pC], v);
 		}
 	}
@@ -163,6 +167,7 @@ public class Interpreter implements Globals {
 			try {
 				v.pC = v.srStack.pop();
 			} catch (EmptyStackException e) {
+				v.profiling();
 				System.exit(0);
 			}
 			break;
