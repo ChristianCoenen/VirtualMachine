@@ -22,7 +22,7 @@ public class VM implements Globals {
 	int averageCounter = 0;
 	Stack<Short> stack = new Stack<>();
 	Stack<Integer> srStack = new Stack<>();
-	double sum=0;
+	double sum = 0;
 
 	/**
 	 * Constructor to create a virtual machine.
@@ -45,14 +45,13 @@ public class VM implements Globals {
 	 *            an interpretable assembler file
 	 */
 	public void run(String filename) {
-			try {
-				load(filename);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+		try {
+			load(filename);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 
 		Interpreter.interpret(this);
-		registers();
 	}
 
 	public void registers() {
@@ -80,25 +79,15 @@ public class VM implements Globals {
 	}
 
 	public void profiling() {
-		sum=0;
+		sum = 0;
 		for (int i = 0; i < profileCounter.length; i++) {
-			profileCounter[i] = ( (profileCounter[i]*100)/averageCounter);
-			sum+=profileCounter[i];
-			if(DEBUG){
-			System.out.println("Pozentwert von Zeile "+i+" = "+profileCounter[i] );}
+			profileCounter[i] = ((profileCounter[i] * 100) / averageCounter);
+			sum += profileCounter[i];
+			if (profileCounter[i]>0.0) {
+				System.out.println("Prozentwert von Zeile " + (i+1) + " = " + profileCounter[i]);
+			}
 		}
-		System.out.println("Summe der prozene: "+ sum);
-	}
-
-	/**
-	 * Loads the assembler file in the virtual machine.
-	 *
-	 * @param test
-	 *            an array with machinecode instructions
-	 */
-	private void simulateLoad(short[] test) {
-		memoryAddress = test;
-
+		System.out.println("Summe der Prozente: " + sum);
 	}
 
 	/**
