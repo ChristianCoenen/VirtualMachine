@@ -139,53 +139,13 @@ public class Compiler implements Globals {
 	 * @return
 	 */
 	private static byte compileWord(String assembler) {
-		switch (assembler) {
-		case "NOP": {
-			return 0b0000;
+		String[] strings = {"NOP", "LOAD", "MOV", "ADD", "SUB", "MUL", "DIV", "PUSH", "POP", "JMP", "JIZ", "JIH", "JSR", "RTS"};
+		for(int i = 0; i < strings.length; i++) {
+			if(assembler.equals(strings[i])) {
+				return (byte) i;
+			}
 		}
-		case "LOAD": {
-			return 0001;
-		}
-		case "MOV": {
-			return 0b0010;
-		}
-		case "ADD": {
-			return 0b0011;
-		}
-		case "SUB": {
-			return 0b0100;
-		}
-		case "MUL": {
-			return 0b0101;
-		}
-		case "DIV": {
-			return 0b0110;
-		}
-		case "PUSH": {
-			return 0b0111;
-		}
-		case "POP": {
-			return 0b1000;
-		}
-		case "JMP": {
-			return 0b1001;
-		}
-		case "JIZ": {
-			return 0b1010;
-		}
-		case "JIH": {
-			return 0b1011;
-		}
-		case "JSR": {
-			return 0b1100;
-		}
-		case "RTS": {
-			return 0b1101;
-		}
-		default: {
-			return 0;
-		}
-		}
+		return -1;
 	}
 
 }
